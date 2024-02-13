@@ -1,0 +1,213 @@
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../../../Utils/Firebase/Firebase_config";
+import { AuthErrorCodes, confirmPasswordReset } from "firebase/auth";
+import { message } from "antd";
+
+export default function ResetPassword() {
+  const [messageApi, contextHolder] = message.useMessage();
+
+  function getUrlParam(key, urlString = window.location.href) {
+    let url = new URL(urlString);
+    return url.searchParams.get(key);
+  }
+
+  const url = new URL(window.location.href);
+
+  const navigate = useNavigate();
+  const [Validation, setValidation] = useState("");
+  const [passowrd, setPassword] = useState("");
+  const [confirmPassword, setconfirmPassword] = useState("");
+  const [successMessage, setSuccessMessage] = useState(false);
+
+  let oobCode = getUrlParam("oobCode", url);
+
+  const validationcheck = () => {
+    setValidation("was-validated");
+  };
+
+  const confirmThePasswordReset = async (oobCode, newPassword) => {
+    if (!oobCode && !newPassword) return;
+    return await confirmPasswordReset(auth, oobCode, newPassword);
+  };
+
+  const check = async () => {
+    try {
+      await confirmThePasswordReset(oobCode);
+      setSuccessMessage(false);
+    } catch (error) {
+      setSuccessMessage(true);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    passowrd !== confirmPassword
+      ? messageApi
+          .open({ type: "loading", content: "Checking...", duration: 1.5 })
+          .then(() => message.error("Passwords did not match.", 1.5))
+      : reset();
+
+    async function reset() {
+      try {
+        await confirmThePasswordReset(oobCode, confirmPassword);
+        messageApi
+          .open({ type: "loading", content: "Checking...", duration: 1.5 })
+          .then(() =>
+            message.success("Your Password change successfully.", 1.5)
+          )
+          .then(() => navigate("/"));
+      } catch (error) {
+        messageApi
+          .open({
+            type: "loading",
+            content: "Checking...",
+            duration: 2.5,
+          })
+          .then(() =>
+            message.error(
+              error.message.includes(AuthErrorCodes.NETWORK_REQUEST_FAILED)
+                ? "Check your connection"
+                : null,
+              2.5
+            )
+          );
+      }
+    }
+  };
+
+  useEffect(() => {
+    check();
+  }, [1]);
+
+  return (
+    <>
+      <div>
+        <section className="vh-100">
+          <div className="container py-5 h-100">
+            <div className="row d-flex justify-content-center align-items-center h-100">
+              <div className="col col-xl-10">
+                <div className="card" style={{ borderRadius: "1rem" }}>
+                  <div
+                    className="row g-0 rounded"
+                    style={{
+                      boxShadow: "20px 2rem 3em rgba(121, 115, 115, 1)",
+                    }}
+                  >
+                    <div className="col-md-6 col-lg-5 d-none d-md-block">
+                      <img
+                        src="ko16.jpeg"
+                        alt="login form"
+                        className="img-fluid object-fit-cover"
+                        style={{
+                          borderRadius: "1rem 0 0 1rem",
+                          height: "100vh",
+                        }}
+                      />
+                    </div>
+                    <div className="col-md-6 col-lg-7 d-flex align-items-center">
+                      <div className="card-body p-4 p-lg-5 text-black">
+                        <div className="d-flex align-items-center mb-3 pb-1">
+                          <img
+                            src="web_logo_br.png"
+                            alt="CT16"
+                            style={{ width: "50px", height: "50px" }}
+                            className=" me-3 w-2 h-3"
+                          />{" "}
+                          <span className="h1 fw-bold mb-0">Calcutta 16</span>
+                          {contextHolder}
+                        </div>
+                        {successMessage ? (
+                          <>
+                            <div>
+                              <strong
+                                className="mb-3 pb-3"
+                                style={{ letterSpacing: 1 }}
+                              >
+                                Try resetting your password again
+                              </strong>
+                              <h5 className="fw-normal mb-3 pb-3">
+                                Your request to reset your password has expired
+                                or the link has already been used
+                              </h5>
+                            </div>
+                          </>
+                        ) : (
+                          <form className={Validation} onSubmit={handleSubmit}>
+                            <h5
+                              className="fw-normal mb-3 pb-3"
+                              style={{ letterSpacing: 1 }}
+                            >
+                              Reset your password
+                            </h5>
+                            <div className="form-outline">
+                              <label className="form-label" htmlFor="password">
+                                Password
+                              </label>
+                              <input
+                                type="password"
+                                minLength={8}
+                                placeholder="Password"
+                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                                required
+                                autoComplete="True"
+                                id="password"
+                                onChange={(event) => {
+                                  setPassword(event.target.value);
+                                }}
+                                className="form-control form-control-lg"
+                              />
+                              <div className="invalid-feedback">
+                                Please enter valid passowrd.
+                              </div>
+                            </div>
+                            <div className="form-outline">
+                              <label
+                                className="form-label"
+                                htmlFor="Confirm_Password"
+                              >
+                                Confirm Password
+                              </label>
+                              <input
+                                type="password"
+                                minLength={8}
+                                placeholder="Confirm Password"
+                                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+                                required
+                                autoComplete="True"
+                                id="Confirm_Password"
+                                onChange={(event) => {
+                                  setconfirmPassword(event.target.value);
+                                }}
+                                className="form-control form-control-lg"
+                              />
+                              <div className="invalid-feedback">
+                                Please enter valid passowrd.
+                              </div>
+                            </div>
+                            <div className="pt-1 mb-4">
+                              <button
+                                className="btn btn-danger btn-lg btn-block"
+                                onClick={validationcheck}
+                                type="submit"
+                              >
+                                Validate
+                              </button>
+                            </div>
+                          </form>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </>
+  );
+}
