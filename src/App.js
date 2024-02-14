@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 
 import Navbar from "./public/component/layout/navbar/Navbar"
 import Footer from './public/component/layout/Footer/Footer'
-<<<<<<< HEAD
 import { useEffect, useState } from "react";
 import { onValue, ref } from "firebase/database";
 import { db } from "./Utils/Firebase/Firebase_config";
@@ -16,22 +15,8 @@ import AdminOrderList from "./admin/Order/AdminOrderList";
 import AdminProductEdit from "./admin/Pruduct/AdminPruductEdit";
 import AdminOrderEdit from "./admin/Order/AdminOrderEdit";
 
-=======
-import UserSignUP from './public/pages/Auth/UserSignUp';
-import UserLogin from './public/pages/Auth/UserLogin';
-import ResetPassword from './public/pages/Auth/ResetPassword'
-import UserForgotPass from "./public/pages/Auth/UserForgotPass";
-import Cart from "./public/pages/Home/Cart";
-import ProductD from "./public/pages/Product/ProductD";
-import { useEffect, useState } from "react";
-import { onValue, ref } from "firebase/database";
-import { db } from "./Utils/Firebase/Firebase_config";
-import Order from "./public/pages/Order/Order";
-import UserAddress from "./public/pages/Order/UserAddress";
-import ProductsAll from "./public/pages/Product/ProductsAll";
-import UserAccount from "./public/pages/User/UserAccount";
-import OrderD from "./public/pages/Order/OrderD";
->>>>>>> 2148cd9f8cb219e19fd7efe38796cb14be97f10a
+
+
 
 function App() {
 
@@ -156,7 +141,7 @@ function App() {
     <>
     <Routes>
       <Route exact path="/">
-<<<<<<< HEAD
+
         <Route exact path="/" element={ <> <AdminHomePage /> <Footer/> </> } />
         <Route exact path="/admin-product-list" element={ <><Navbar /><AdminProductList /> <Footer/> </> } />
         <Route exact path="/admin-user-list" element={ <><Navbar /><AdminUserList /> <Footer/> </> } />
@@ -165,25 +150,8 @@ function App() {
         <Route exact path="/admin-product-Edit/:id" element={ <><Navbar /><AdminProductEdit /> <Footer/> </> } />
         <Route exact path="/admin-order-Edit/:id" element={ <><Navbar /><AdminOrderEdit /> <Footer/> </> } />
         
-=======
 
-        {/* Public */}
-        <Route exact path="/" element={ <><Navbar/> <Slidebanner/><Productcard/> <LongBanner /> <CategoriesBanner /> <Footer/> </> } />
-        <Route exact path="cart" element={ <><Navbar/>  <Cart />  <Footer/> </> } />
-        <Route exact path="product/:id" element={ <><Navbar />  <ProductD />  <Footer/> </> } />
-        <Route exact path="products" element={ <><Navbar />  <ProductsAll />  <Footer/> </> } />
-        <Route exact path="login" element={ <><Navbar/> <UserLogin/> <Footer/> </> } />
-        <Route exact path="signup" element={ <><Navbar/> <UserSignUP/> <Footer/> </> } />
 
-        <Route exact path="order" element={ <><Navbar/> <Order  /> <Footer/> </> } />
-        <Route exact path="user-account/order/:id" element={ <><Navbar/> <OrderD/> <Footer/> </> } />
-        <Route exact path="user-account" element={ <><Navbar/> <UserAccount OrderData={OrderHistoryData} /> <Footer/> </> } />
-        <Route exact path="user-account/user-address" element={ <><Navbar/> <UserAddress/> <Footer/> </> } />
-
-        <Route exact path="forgotpassword" element={ <><Navbar/> <UserForgotPass/> <Footer/> </> } />
-        <Route exact path="__/auth/action?" element={<><ResetPassword/></>}/>
-  
->>>>>>> 2148cd9f8cb219e19fd7efe38796cb14be97f10a
       </Route>
 
     </Routes>

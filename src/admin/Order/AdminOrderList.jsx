@@ -3,6 +3,7 @@ import "./AdminProductList.css";
 import { Link } from "react-router-dom";
 import { onValue, ref } from "firebase/database";
 import { db } from "../../Utils/Firebase/Firebase_config";
+import Loader from "../../public/component/layout/Loader/Loader";
 
 function AdminOrderList(props) {
   const [OrdreData, setOrdreData] = useState([]);
@@ -23,7 +24,20 @@ function AdminOrderList(props) {
       }
     });
   };
-  sessionStorage.setItem("OrdreData", JSON.stringify(OrdreData));
+  function calculate(items) {
+    let totalprice = 0;
+    items.forEach((item) => {
+      totalprice += item.ProductPrice * item.Quantity;
+    });
+    return totalprice;
+  }
+  function calculateDis(items) {
+    let totalprice = 0;
+    items.forEach((item) => {
+      totalprice += item.ProductOfferPrice * item.Quantity;
+    });
+    return totalprice;
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,7 +48,10 @@ function AdminOrderList(props) {
     fetchData();
   }, []);
 
-  var list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+console.log(OrdreData);
+  if (OrdreData.length===0) {
+    return <Loader />
+  }
   return (
     <div className="container">
       <div className="row">
@@ -106,7 +123,7 @@ function AdminOrderList(props) {
                       <div className="row">
                         <div className="col-lg-6">
                           <div className="records">
-                            Showing : <b>200</b> result
+                            Showing : <b>{OrdreData.length}</b> result
                           </div>
                         </div>
                         <div className="col-lg-6">
@@ -178,7 +195,7 @@ function AdminOrderList(props) {
                       <div className="table-responsive">
                         <table className="table widget-26">
                           <tbody>
-                            {list.map((e, index) => (
+                            {OrdreData.map((e, index) => (
                               <tr>
                                 <td>
                                   <div className="widget-26-job-emp-img">
@@ -187,38 +204,38 @@ function AdminOrderList(props) {
                                 </td>
                                 <td>
                                   <div className="widget-26-job-title">
-                                    <a href="#">Product name ...</a>
+                                    <Link href="#">{e.UserAddress.name}</Link>
                                     <p className="m-0">
-                                      <a href="#" className="employer-name">
-                                        #Product id....
-                                      </a>{" "}
+                                      <Link href="#" className="employer-name">
+                                        {e.id}
+                                      </Link>{" "}
                                       <span className="text-muted time">
-                                        Date
+                                        {e.orderdate}
                                       </span>
                                     </p>
                                   </div>
                                 </td>
                                 <td>
                                   <div className="widget-26-job-info">
-                                    <p className="type m-0">Category</p>
+                                    <p className="type m-0">{e.orderdate}</p>
                                     <p className="text-muted m-0">
-                                      in <span className="location">Size</span>
+                                      at <span className="location">{e.ordertime}</span>
                                     </p>
                                   </div>
                                 </td>
                                 <td>
                                   <div className="widget-26-job-salary">
-                                    Price / <del> Old Price</del>
+                                    {calculateDis(e.CartList)} / <del> {calculate(e.CartList)}</del>
                                   </div>
                                 </td>
                                 <td>
                                   <div className="widget-26-job-category bg-soft-base">
-                                    <span> 100 Stock</span>
+                                    <span> {e.CartList.map((i)=>(<>{i.Quantity}, </> ))}</span>
                                   </div>
                                 </td>
                                 <td>
                                   <div className="widget-26-job-starred">
-                                    <Link to={`/admin-order-Edit/${index}`}>
+                                    <Link to={`/admin-order-Edit/${e.id}`}>
                                       <button
                                         type="button"
                                         class="btn btn-success btn-sm"

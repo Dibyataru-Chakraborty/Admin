@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import "./AdminProductList.css";
 import { onValue, ref } from "firebase/database";
 import { db } from "../../Utils/Firebase/Firebase_config";
+import Loader from "../../public/component/layout/Loader/Loader";
 
 function AdminUserList(props) {
 
   const [UsersData, setUsersData] = useState([]);
   const Users = () => {
-    onValue(ref(db, "Product"), (snapshot) => {
+    onValue(ref(db, "Users"), (snapshot) => {
       const data = snapshot.val();
       if (data === null) {
         setUsersData([]);
@@ -34,7 +35,10 @@ function AdminUserList(props) {
     fetchData();
   }, []);
 
-  var list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+  if (UsersData.length===0) {
+    return <Loader />
+  }
   return (
     <div className="container">
       <div className="row">
@@ -106,7 +110,7 @@ function AdminUserList(props) {
                       <div className="row">
                         <div className="col-lg-6">
                           <div className="records">
-                            Showing :  <b>200</b> result
+                            Showing :  <b>{UsersData.length}</b> result
                           </div>
                         </div>
                         <div className="col-lg-6">
@@ -178,7 +182,7 @@ function AdminUserList(props) {
                       <div className="table-responsive">
                         <table className="table widget-26">
                           <tbody>
-                            {list.map((e) => (
+                            {UsersData.map((e) => (
                               <tr>
                                 <td>
                                   <div className="widget-26-job-emp-img">
